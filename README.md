@@ -5,7 +5,7 @@ this is a [(mostly)](https://github.com/sogful/gddemo/tree/main/src/game/Depende
 
 - clone the repository:
    ```
-   git clone https://github.com/yourusername/geometry-dash-web.git
+   git clone https://github.com/sogful/gddemo.git
    cd geometry-dash-web
    ```
 - install dependencies:
@@ -27,6 +27,6 @@ this is a [(mostly)](https://github.com/sogful/gddemo/tree/main/src/game/Depende
 - `src/game/GameBootstrap.js` - phaser config and bootstrap
 - `src/game/BootScene.js` - asset loading and initial setup
 - `src/game/GameScene.js` - main game logic
-<br>
+
 - `src/Globals.js` - game config
 - `src/game/Buttons.js` - button actions/links config
