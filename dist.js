@@ -99202,7 +99202,7 @@ class TasteTheRainbow {
   }
 }
 class PlatformerTest {
-  static PlatformerEnabled = true;
+  static PlatformerEnabled = false;
   constructor(physicsState) {
     this.p = physicsState;
     this.enabled = PlatformerTest.PlatformerEnabled;
