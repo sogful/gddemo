@@ -1047,8 +1047,11 @@ class Player {
         if (rect.type !== objectTypeFlyMode) {
           if (rect.type !== objectTypeCubeMode) {
             if (rect.type === collisionHazard) {
-              this.killPlayer();
-              return;
+              if (!this.p.noclipEnabled) {
+                this.killPlayer();
+                return;
+              }
+              continue;
             }
             if (rect.type === collisionSolid) {
               let feetPrev = py - halfW + hitInset;
@@ -1059,8 +1062,11 @@ class Player {
               const crushZone = playerX + crushPad > left && playerX - crushPad < right && py + crushPad > top && py - crushPad < bottom;
               const onTop = (this.p.yVelocity <= 0 || this.p.onGround) && (feetPrev >= bottom || feetLast >= bottom);
               if (crushZone && !onTop && !this.p.platformerMode) {
-                this.killPlayer();
-                return;
+                if (!this.p.noclipEnabled) {
+                  this.killPlayer();
+                  return;
+                }
+                continue;
               }
               const horizontalOverlap = this._platformer && this._platformer.enabled ? playerX + halfW > left && playerX - halfW < right : playerX + 30 - 5 > left && playerX - 30 + 5 < right;
               if (horizontalOverlap) {
@@ -1113,8 +1119,10 @@ class Player {
     }
     if (this.p.collideTop !== 0 && this.p.collideBottom !== 0) {
       if (Math.abs(this.p.collideTop - this.p.collideBottom) < 48) {
-        this.killPlayer();
-        return;
+        if (!this.p.noclipEnabled) {
+          this.killPlayer();
+          return;
+        }
       }
     }
     let floorY = this._gameLayer.getFloorY();

@@ -12,6 +12,7 @@
     
     {"file": "game/fun/Rainbow.js"},
     {"file": "game/fun/PlatformerTest.js"},
+    {"file": "game/fun/Noclip.js"},
     
     {"file": "game/BootScene.js"},
     {"file": "game/LoadingScene.js"},

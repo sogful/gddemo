@@ -1,5 +1,9 @@
 class PlatformerTest {
-  static PlatformerEnabled = false;
+
+  /*//////////////////////////////////////////////////////////////////////*/
+  static PlatformerEnabled = true;
+  /*//////////////////////////////////////////////////////////////////////*/
+
   constructor(physicsState) {
     this.p = physicsState;
     this.enabled = PlatformerTest.PlatformerEnabled;

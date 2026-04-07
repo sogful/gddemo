@@ -99137,7 +99137,11 @@ const EndScreenButtons = [{
   kind: EndKind.MENU
 }];
 class TasteTheRainbow {
+
+  /*//////////////////////////////////////////////////////////////////////*/
   static RainbowEnabled = false;
+  /*//////////////////////////////////////////////////////////////////////*/
+  
   constructor() {
     this.enabled = TasteTheRainbow.RainbowEnabled;
     this._t = 0;
@@ -99202,7 +99206,11 @@ class TasteTheRainbow {
   }
 }
 class PlatformerTest {
-  static PlatformerEnabled = false;
+
+  /*//////////////////////////////////////////////////////////////////////*/
+  static PlatformerEnabled = true;
+  /*//////////////////////////////////////////////////////////////////////*/
+
   constructor(physicsState) {
     this.p = physicsState;
     this.enabled = PlatformerTest.PlatformerEnabled;
@@ -99345,6 +99353,31 @@ class PlatformerTest {
       return true;
     }
     return Math.abs(this._horizontalVelocity) > 0.08;
+  }
+}
+class Noclip {
+  
+  /*//////////////////////////////////////////////////////////////////////*/
+  static NoclipEnabled = true;
+  /*//////////////////////////////////////////////////////////////////////*/
+
+  constructor(physicsState) {
+    this.p = physicsState;
+    this.enabled = Noclip.NoclipEnabled;
+    this._boundPlayer = null;
+  }
+  bindPlayer(player) {
+    if (!this.enabled || !player || this._boundPlayer === player) {
+      return;
+    }
+    this._boundPlayer = player;
+    player.killPlayer = () => {};
+  }
+  apply() {
+    this.p.noclipEnabled = this.enabled;
+    if (this.enabled) {
+      this.p.isDead = false;
+    }
   }
 }
 // not much is here since we're immediately moving into LoadingScene.js
@@ -100618,6 +100651,8 @@ class GameScene extends Phaser.Scene {
     this._platformer.reset();
     this._level = new GameLevel(this, this._cameraXRef);
     this._player = new Player(this, this._state, this._level, this._platformer);
+    this._noclip = new Noclip(this._state);
+    this._noclip.bindPlayer(this._player);
     this._colorManager = new ColorManager();
     this._audio = new AudioManager(this);
     let levelText = this.cache.text.get("level_1");
@@ -101726,6 +101761,7 @@ class GameScene extends Phaser.Scene {
       this._state.upKeyDown = true;
     }
     this._level.updateEndPortalY(this._cameraY, this._state.isFlying);
+    this._noclip.apply();
     if (!this._levelWon && !this._state.isDead && this._level.endXPos > 0) {
       const endPortalLead = 600;
       if (this._playerWorldX >= this._level.endXPos - endPortalLead) {
@@ -103339,8 +103375,11 @@ class Player {
         if (rect.type !== objectTypeFlyMode) {
           if (rect.type !== objectTypeCubeMode) {
             if (rect.type === collisionHazard) {
-              this.killPlayer();
-              return;
+              if (!this.p.noclipEnabled) {
+                this.killPlayer();
+                return;
+              }
+              continue;
             }
             if (rect.type === collisionSolid) {
               let feetPrev = py - halfW + hitInset;
@@ -103351,8 +103390,11 @@ class Player {
               const crushZone = playerX + crushPad > left && playerX - crushPad < right && py + crushPad > top && py - crushPad < bottom;
               const onTop = (this.p.yVelocity <= 0 || this.p.onGround) && (feetPrev >= bottom || feetLast >= bottom);
               if (crushZone && !onTop && !this.p.platformerMode) {
-                this.killPlayer();
-                return;
+                if (!this.p.noclipEnabled) {
+                  this.killPlayer();
+                  return;
+                }
+                continue;
               }
               const horizontalOverlap = this._platformer && this._platformer.enabled ? playerX + halfW > left && playerX - halfW < right : playerX + 30 - 5 > left && playerX - 30 + 5 < right;
               if (horizontalOverlap) {
@@ -103405,8 +103447,10 @@ class Player {
     }
     if (this.p.collideTop !== 0 && this.p.collideBottom !== 0) {
       if (Math.abs(this.p.collideTop - this.p.collideBottom) < 48) {
-        this.killPlayer();
-        return;
+        if (!this.p.noclipEnabled) {
+          this.killPlayer();
+          return;
+        }
       }
     }
     let floorY = this._gameLayer.getFloorY();

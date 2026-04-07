@@ -35,6 +35,8 @@ class GameScene extends Phaser.Scene {
     this._platformer.reset();
     this._level = new GameLevel(this, this._cameraXRef);
     this._player = new Player(this, this._state, this._level, this._platformer);
+    this._noclip = new Noclip(this._state);
+    this._noclip.bindPlayer(this._player);
     this._colorManager = new ColorManager();
     this._audio = new AudioManager(this);
     let levelText = this.cache.text.get("level_1");
@@ -1143,6 +1145,7 @@ class GameScene extends Phaser.Scene {
       this._state.upKeyDown = true;
     }
     this._level.updateEndPortalY(this._cameraY, this._state.isFlying);
+    this._noclip.apply();
     if (!this._levelWon && !this._state.isDead && this._level.endXPos > 0) {
       const endPortalLead = 600;
       if (this._playerWorldX >= this._level.endXPos - endPortalLead) {
