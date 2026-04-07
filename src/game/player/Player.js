@@ -79,6 +79,12 @@ class Player {
     this._playerLayers = [this._playerSpriteLayer, this._playerGlowLayer, this._playerOverlayLayer, this._playerExtraLayer];
     this._shipLayers = [this._shipSpriteLayer, this._shipGlowLayer, this._shipOverlayLayer, this._shipExtraLayer];
     this._allLayers = [...this._playerLayers, ...this._shipLayers];
+    this._playerLayerBaseDepths = new Map();
+    for (const layer of this._playerLayers) {
+      if (layer && layer.sprite && layer.sprite.depth !== undefined) {
+        this._playerLayerBaseDepths.set(layer.sprite, layer.sprite.depth);
+      }
+    }
   }
   _initParticles(scene) {
     this._particleEmitter = scene.add.particles(0, 0, "GJ_WebSheet", {
@@ -433,6 +439,11 @@ class Player {
     this._streak.start();
     this.setShipVisible(true);
     for (const layer of this._playerLayers) {
+      if (layer && layer.sprite) {
+        layer.sprite.setDepth(7);
+      }
+    }
+    for (const layer of this._playerLayers) {
       if (layer) {
         layer.sprite.setScale(0.55);
       }
@@ -466,6 +477,10 @@ class Player {
       this.setCubeVisible(true);
       for (const layer of this._playerLayers) {
         if (layer) {
+          const baseDepth = this._playerLayerBaseDepths.get(layer.sprite);
+          if (baseDepth !== undefined) {
+            layer.sprite.setDepth(baseDepth);
+          }
           layer.sprite.setScale(1);
         }
       }
