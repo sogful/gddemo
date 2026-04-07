@@ -4,7 +4,7 @@ class Player {
     this.p = physicsState;
     this._gameLayer = gameLayer;
     this._rotation = 0;
-    this.rotateActionActive = false;
+    this.rotateActionActive = true;
     this.rotateActionTime = 0;
     this.rotateActionDuration = 0;
     this.rotateActionStart = 0;
@@ -1189,7 +1189,6 @@ class Player {
     this._endAnimating = false;
     this._lastLandObject = null;
     this._lastXOffset = 0;
-    this.stopRotation();
     this.rotateActionTime = 0;
     this._rotation = 0;
     this._lastCameraX = 0;
